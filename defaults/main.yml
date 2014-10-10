@@ -1,7 +1,7 @@
 ---
 essentials:
   upgrade: False
-  update: False
+  update: True
   timezone: "America/New_York"
   packages:
     - lynx

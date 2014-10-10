@@ -20,6 +20,10 @@ None.
 
 TODO:Add example playbook
 
+## Testing
+
+Go to tests dir and do "vagrant up"
+
 ## License
 
 MIT / BSD
