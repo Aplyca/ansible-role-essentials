@@ -1,0 +1,4 @@
+---
+- name: reload tzdata
+  sudo: yes
+  command: dpkg-reconfigure --frontend noninteractive tzdata

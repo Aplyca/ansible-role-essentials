@@ -1,0 +1,10 @@
+---
+essentials:
+  dist-upgrade: True
+  timezone: "America/New_York"
+  packages:
+    - lynx
+    - bash
+    - curl
+    - wget
+    - git
