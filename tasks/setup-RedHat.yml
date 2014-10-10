@@ -6,9 +6,9 @@
     state: latest
   when: essentials["upgrade"]  
     
-- name: Ensure essentials packages are present using apt
+- name: Ensure essentials packages are present using yum
   sudo: yes
-  apt:
+  yum:
     name: "{{ item }}"
     state: present
   with_items: essentials["packages"]
