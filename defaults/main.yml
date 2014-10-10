@@ -1,7 +1,7 @@
 ---
 essentials:
-  upgrade: True
-  update: True
+  upgrade: False
+  update: False
   timezone: "America/New_York"
   packages:
     - lynx
@@ -9,3 +9,4 @@ essentials:
     - curl
     - wget
     - git
+  crons: []

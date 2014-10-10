@@ -11,3 +11,14 @@
     dest: /etc/timezone
   notify: reload tzdata
   when: timezone.stdout != (essentials['timezone'] | default('Etc/UTC'))
+
+- name: Updating crontab
+  cron:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    job: "cd {{ item.root | default('~') }} && {{ item.job }}"
+    hour: "{{ item.hour | default('*') }}"
+    minute: "{{ item.minute | default('*') }}"
+    weekday: "{{ item.weekday | default('*') }}"
+  with_items: essentials["crons"]
+  when: essentials["crons"]
