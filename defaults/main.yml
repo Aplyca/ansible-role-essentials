@@ -1,6 +1,7 @@
 ---
 essentials:
-  dist-upgrade: True
+  upgrade: True
+  update: True
   timezone: "America/New_York"
   packages:
     - lynx

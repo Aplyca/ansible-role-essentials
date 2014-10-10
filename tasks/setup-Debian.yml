@@ -4,23 +4,18 @@
   apt:
     update_cache: yes
     cache_valid_time: 86400
+  when: essentials["update"]
 
 - name: Upgrade the system
   sudo: yes
   apt:
     upgrade: dist
     cache_valid_time: 86400
-    
+  when: essentials["upgrade"]
+
 - name: Ensure essentials packages are present using apt
   sudo: yes
   apt:
     name: "{{ item }}"
     state: present
   with_items: essentials["packages"]
-
-- name: Add custom timezone
-  sudo: yes
-  copy:
-    content: "{{ essentials['timezone'] | default('Etc/UTC')}}"
-    dest: /etc/timezone
-  notify: reload tzdata
