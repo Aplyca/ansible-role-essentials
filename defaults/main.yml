@@ -4,6 +4,7 @@ essentials:
   update: True
   timezone: "America/New_York"
   packages:
+    - rsync
     - lynx
     - bash
     - curl
