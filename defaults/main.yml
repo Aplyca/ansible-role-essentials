@@ -11,3 +11,4 @@ essentials:
     - wget
     - git
   crons: []
+  authorized_keys: []

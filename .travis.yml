@@ -9,6 +9,7 @@ before_install:
   - uname -a
   - cat /proc/version
   - sudo apt-get update -qq
+  - ln -s ansible-role-essentials ../mauricios.Essentials
 
 install:
   # Install Ansible.

@@ -22,3 +22,11 @@
     weekday: "{{ item.weekday | default('*') }}"
   with_items: essentials["crons"]
   when: essentials["crons"]
+
+- name: Set up authorized_keys for the deploy user
+  authorized_key:
+    user: "{{ ansible_user_id }}"
+    key: "{{ item }}"
+  with_file: essentials['authorized_keys']
+  when: essentials['authorized_keys']
+
