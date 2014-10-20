@@ -13,6 +13,7 @@ before_install:
 
 install:
   # Install Ansible.
+  - sudo pip install paramiko PyYAML jinja2 httplib2
   - sudo pip install ansible
 
 script:
