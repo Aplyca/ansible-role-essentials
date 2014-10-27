@@ -19,3 +19,16 @@
     name: "{{ item }}"
     state: present
   with_items: essentials["packages"]
+
+- name: Check the timezone
+  command: cat /etc/timezone
+  register: timezone
+  changed_when: False
+
+- name: Add custom timezone
+  sudo: yes
+  copy:
+    content: "{{ essentials['timezone'] | default('Etc/UTC') }}"
+    dest: /etc/timezone
+  notify: reload tzdata
+  when: timezone.stdout != (essentials['timezone'] | default('Etc/UTC'))
