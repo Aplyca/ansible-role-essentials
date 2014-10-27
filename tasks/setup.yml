@@ -23,9 +23,29 @@
   with_items: essentials["crons"]
   when: essentials["crons"]
 
-- name: Set up authorized_keys for the deploy user
+- name: Make sure that the .ssh directory exists
+  file:
+    path: ~/.ssh
+    state: directory
+    mode: 0700
+
+- name: Set up authorized_keys
   authorized_key:
     user: "{{ ansible_user_id }}"
     key: "{{ item }}"
-  with_items: essentials['authorized_keys']
-  when: essentials['authorized_keys']
+  with_items: essentials['ssh']['authorized_keys']
+  when: essentials['ssh']['authorized_keys']
+
+- name: Send SSH config (host connections)
+  template:
+    src: home/ansible_user/.ssh/config.j2
+    dest: ~/.ssh/config
+    mode: 0600
+
+- name: Add key to remote user
+  copy:
+    src: "{{ item.IdentityFileSource }}"
+    dest: "~/.ssh/{{ item.IdentityFile }}"
+    mode: 0400
+  with_items: essentials["ssh"]["config"]
+  when: essentials["ssh"]["config"]

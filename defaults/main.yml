@@ -1,7 +1,7 @@
 ---
 essentials:
   upgrade: False
-  update: True
+  update: False
   timezone: "America/New_York"
   packages:
     - rsync
@@ -11,5 +11,6 @@ essentials:
     - wget
     - git
   crons: []
-  authorized_keys: []
-  
+  ssh:
+    authorized_keys: []
+    config: []
