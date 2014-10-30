@@ -36,3 +36,13 @@
     mode: 0400
   with_items: essentials["ssh"]["config"]
   when: essentials["ssh"]["config"]
+
+- name: Make sure the file system ACLs are present
+  acl:
+     name: "{{ item.name }}"
+     entity: "{{ item.entity  | default(ansible_user_id)}}"
+     etype: "{{ item.etype | default('user') }}"
+     permissions: "{{ item.permissions | default('rwx') }}"
+     default: "{{ item.permissions | default('yes') }}"
+     state: "{{ item.state | default('present') }}"
+  with_items: essentials["acl"]

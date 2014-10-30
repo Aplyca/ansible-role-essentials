@@ -10,7 +10,9 @@ essentials:
     - curl
     - wget
     - git
+    - acl
   crons: []
   ssh:
     authorized_keys: []
     config: []
+  acl: []

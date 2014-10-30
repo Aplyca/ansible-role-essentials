@@ -1,0 +1,6 @@
+---
+essentials:
+  acl:
+    -
+     name: "{{ ansible_env['HOME'] }}"
+     entity: nobody
