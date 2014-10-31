@@ -4,7 +4,7 @@
   yum:
     name: "*"
     state: latest
-  when: essentials["upgrade"]  
+  when: essentials["upgrade"] is defined and essentials["upgrade"]
     
 - name: Ensure essentials packages are present using yum
   sudo: yes

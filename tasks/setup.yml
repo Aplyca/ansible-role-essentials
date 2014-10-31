@@ -8,7 +8,7 @@
     minute: "{{ item.minute | default('*') }}"
     weekday: "{{ item.weekday | default('*') }}"
   with_items: essentials["crons"]
-  when: essentials["crons"]
+  when: essentials["crons"] is defined
 
 - name: Make sure that the .ssh directory exists
   file:
