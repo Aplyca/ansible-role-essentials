@@ -16,3 +16,6 @@ essentials:
     authorized_keys: []
     config: []
   acl: []
+  mount:
+    device: /dev/xvdf
+    mount_point: /mnt/storage

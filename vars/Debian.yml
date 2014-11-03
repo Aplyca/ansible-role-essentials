@@ -1,0 +1,4 @@
+---
+essentials:
+  mount:
+    options: "defaults,discard,nofail,nobootwait"
