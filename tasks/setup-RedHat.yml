@@ -17,3 +17,9 @@
   sudo: yes
   command: "sudo timedatectl set-timezone {{ essentials['timezone'] | default('Etc/UTC') }}"
   changed_when: False
+
+- name: Disable SELInux
+  sudo: yes
+  selinux:
+    state: "{{ essentials['selinux'] }}"
+  when: essentials['selinux'] is defined
