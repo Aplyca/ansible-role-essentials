@@ -2,5 +2,3 @@
 - hosts: all
   roles:
     - mauricios.Essentials
-  vars_files:
-    - "vars.yml"

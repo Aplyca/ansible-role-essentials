@@ -1,6 +1,0 @@
----
-essentials:
-  acl:
-    -
-     name: "{{ ansible_env['HOME'] }}/ansible-role-essentials/tests/dummy"
-     entity: nobody
