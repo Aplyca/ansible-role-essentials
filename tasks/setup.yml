@@ -51,6 +51,7 @@
   command: "lsblk {{ essentials['mount']['device'] }}"
   register: attached_device
   changed_when: False
+  ignore_errors: True
   when: essentials['mount']['device'] is defined
 
 - name: Create mount point for directory
