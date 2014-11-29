@@ -1,6 +1,6 @@
 ---
 essentials:
-  upgrade: False
+  upgrade: True
   update: True
   timezone: "America/New_York"
   packages:
