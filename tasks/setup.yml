@@ -50,8 +50,8 @@
 - name: Check if an attached device exists
   command: "lsblk {{ essentials['mount']['device'] }}"
   register: attached_device
-  ignore_errors: True
   changed_when: False
+  when: essentials['mount']['device'] is defined
 
 - name: Create mount point for directory
   sudo: yes
@@ -59,6 +59,7 @@
     path: "{{ essentials['mount']['mount_point'] }}"
     state: directory
     mode: 0775
+  when: essentials['mount']['mount_point'] is defined
 
 - name: Mount Attacched Device
   sudo: yes
@@ -68,4 +69,4 @@
     fstype: ext4
     opts: "{{ essentials['mount']['options'] }}"
     state: mounted
-  when: attached_device|success
+  when: essentials['mount']['device'] is defined and attached_device|success

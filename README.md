@@ -1,6 +1,7 @@
 # Ansible Role: Essentials
 
 [![Build Status](https://travis-ci.org/Aplyca/ansible-role-essentials.svg?branch=master)](https://travis-ci.org/Aplyca/ansible-role-essentials)
+[![Circle CI](https://circleci.com/gh/Aplyca/ansible-role-essentials.svg?style=svg)](https://circleci.com/gh/Aplyca/ansible-role-essentials)
 
 Ansible Role that installs and configure  Essentials software on Debian/Ubuntu.
 
