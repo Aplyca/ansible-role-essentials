@@ -23,11 +23,12 @@
   with_items: essentials['ssh']['authorized_keys']
   when: essentials['ssh']['authorized_keys']
 
-- name: Send SSH config (host connections)
+- name: Make sure SSH config is present
   template:
     src: home/ansible_user/.ssh/config.j2
     dest: ~/.ssh/config
     mode: 0600
+  changed_when: False
 
 - name: Add key to remote user
   copy:
