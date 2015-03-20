@@ -72,3 +72,7 @@
     opts: "{{ essentials['mount']['options'] }}"
     state: mounted
   when: essentials['mount']['device'] is defined and attached_device|success
+
+- name: Update time
+  sudo: yes
+  shell: "ntpdate pool.ntp.org"
