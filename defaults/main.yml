@@ -16,3 +16,4 @@ essentials:
     authorized_keys: []
     config: []
   acl: []
+  ssl_certs: []

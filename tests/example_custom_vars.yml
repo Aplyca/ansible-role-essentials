@@ -1,0 +1,9 @@
+---
+essentials:
+  ssl_certs:
+    - name: app
+      path: /etc/ssl
+      bits: 2048
+      type: rsa
+      days: 365
+      domain: "*.app.com"
