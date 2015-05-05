@@ -24,5 +24,4 @@ test:
     - lynx --version
     - git --version
     - wget --version
-    - "env x='() { :;}; echo vulnerable' bash -c 'echo hello' | grep -q 'vulnerable' && (echo 'Shellshock test: pass' && exit 0) || (echo 'Shellshock test: fail' && exit 1)"
     - "date | grep -q 'EDT' && (echo 'Date test: pass' && exit 0) || (echo 'Date test: fail' && exit 1)"
