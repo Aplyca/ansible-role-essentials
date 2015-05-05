@@ -2,3 +2,7 @@
 - name: reload tzdata
   sudo: yes
   command: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: update ntpd
+  sudo: yes
+  command: "service ntp stop && ntpdate -u pool.ntp.org service ntp start"

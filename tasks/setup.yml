@@ -75,13 +75,10 @@
 
 - name: Create self-signed SSL certificate
   sudo: yes
-  command: "openssl req -x509 -nodes -newkey {{ item.type | default('rsa') }}:{{ item.bits | default('2048') }} -subj '/C=US/ST=Oregon/L=Portland/O=IT/CN={{ item.domain | default('*.example.com')}}' -days {{ item.days | default('365') }} -keyout {{ item.name }}.key -out {{ item.name }}.crt -extensions v3_ca"
+  command: "openssl req -x509 -nodes -newkey {{ item.type | default('rsa') }}:{{ item.bits | default('2048') }} -subj '/C={{ item.CountryName | default('AU') }}/ST={{ item.StateName | default('Some-State') }}/O={{ item.OrganizationName | default('Internet Widgits Pty Ltd') }}/CN={{ item.CommonName | default('*.example.com') }}' -days {{ item.days | default('365') }} -keyout {{ item.name }}.key -out {{ item.name }}.crt -extensions v3_ca"
   args:
     chdir: "{{ item.path }}"
     creates: "{{ item.path }}/{{ item.name }}.crt"
   with_items: essentials["ssl_certs"]
   when: essentials['ssl_certs'] is defined
 
-- name: Update time
-  sudo: yes
-  shell: "ntpdate pool.ntp.org"

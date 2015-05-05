@@ -30,5 +30,7 @@
   copy:
     content: "{{ essentials['timezone'] | default('Etc/UTC') }}"
     dest: /etc/timezone
-  notify: reload tzdata
+  notify:
+    - reload tzdata
+    - update ntpd
   when: timezone.stdout is defined and timezone.stdout != (essentials['timezone'] | default('Etc/UTC'))

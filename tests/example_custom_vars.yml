@@ -6,4 +6,7 @@ essentials:
       bits: 2048
       type: rsa
       days: 365
-      domain: "*.app.com"
+      CountryName: AU
+      StateName: Some-State
+      OrganizationName: "Internet Widgits Pty Ltd"
+      CommonName: "*.app.com"
