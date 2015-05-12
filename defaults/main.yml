@@ -11,6 +11,7 @@ essentials:
     - wget
     - git
     - acl
+    - ntp
   crons: []
   ssh:
     authorized_keys: []

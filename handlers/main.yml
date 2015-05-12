@@ -5,4 +5,4 @@
 
 - name: update ntpd
   sudo: yes
-  command: "service ntp stop && ntpdate -u pool.ntp.org service ntp start"
+  command: "service ntp stop && ntpdate -u pool.ntp.org && service ntp start"
