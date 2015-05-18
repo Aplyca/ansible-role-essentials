@@ -15,12 +15,12 @@ See official docs: http://docs.ansible.com/intro_configuration.html#hash-behavio
 
 Using ansible galaxy:
 ```bash
-ansible-galaxy install mauricios.Essentials
+ansible-galaxy install aplyca.Essentials
 ```
 You can add this role as a dependency for other roles, add the role to the meta/main.yml file of your own role:
 ```yaml
 dependencies:
-  - { role: mauricios.Essentials }
+  - { role: aplyca.Essentials }
 ```
 
 ## Role Variables

@@ -13,7 +13,7 @@ machine:
 
 test:
   pre:
-    - sudo ln -s ansible-role-essentials ../../mauricios.Essentials
+    - sudo ln -s ansible-role-essentials ../../aplyca.Essentials
     - pwd
   override:
     # Install dependencies

@@ -18,7 +18,7 @@ install:
   - sudo pip install ansible
 
 before_script:
-  - ln -s ansible-role-essentials ../mauricios.Essentials
+  - ln -s ansible-role-essentials ../aplyca.Essentials
 
 script:
   - "cd tests"
