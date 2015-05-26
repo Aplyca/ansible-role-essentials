@@ -82,3 +82,8 @@
   with_items: essentials["ssl_certs"]
   when: essentials['ssl_certs'] is defined
 
+- name: Add directory to path 
+  sudo: yes
+  template:
+    src: templates/etc/profile.d/profile.j2
+    dest: "templates/etc/profile.d/.profile"
