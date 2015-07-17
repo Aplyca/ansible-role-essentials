@@ -23,6 +23,16 @@ dependencies:
   - { role: aplyca.Essentials }
 ```
 
+## Default Installed Packages
+  - rsync
+  - lynx
+  - bash
+  - curl
+  - wget
+  - git
+  - acl
+  - ntp
+
 ## Role Variables
 
 See default variables: https://github.com/Aplyca/ansible-role-essentials/blob/master/defaults/main.yml

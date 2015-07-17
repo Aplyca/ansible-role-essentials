@@ -85,5 +85,14 @@
 - name: Add directory to path 
   sudo: yes
   template:
-    src: templates/etc/profile.d/profile.j2
-    dest: "templates/etc/profile.d/.profile"
+    src: etc/profile.d/custom.j2
+    dest: /etc/profile.d/custom
+
+- name: Make sure the users are configured
+  sudo: yes
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    append: yes
+  with_items: essentials["users"]
+  when: essentials['users'] is defined
