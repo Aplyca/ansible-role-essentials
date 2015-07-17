@@ -82,3 +82,11 @@
   with_items: essentials["ssl_certs"]
   when: essentials['ssl_certs'] is defined
 
+- name: Make sure the users are configured
+  sudo: yes
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    append: yes
+  with_items: essentials["users"]
+  when: essentials['users'] is defined
