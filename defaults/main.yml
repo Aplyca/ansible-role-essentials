@@ -19,3 +19,4 @@ essentials:
   acl: []
   ssl_certs: []
   users: []
+  paths: []

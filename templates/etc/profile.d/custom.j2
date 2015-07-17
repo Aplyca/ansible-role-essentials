@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+# set PATH so it includes my dir bin if it exists
+{% for path in essentials['paths'] %}
+if [ -d "path" ] ; then
+    PATH="path:$PATH"
+fi
+{% endfor %}
