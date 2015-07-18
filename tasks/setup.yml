@@ -85,8 +85,8 @@
 - name: Add directory to path 
   sudo: yes
   template:
-    src: etc/profile.d/custom.j2
-    dest: /etc/profile.d/custom
+    src: etc/profile.d/custom.sh.j2
+    dest: /etc/profile.d/custom.sh
 
 - name: Make sure the users are configured
   sudo: yes
