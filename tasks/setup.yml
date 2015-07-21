@@ -82,11 +82,12 @@
   with_items: essentials["ssl_certs"]
   when: essentials['ssl_certs'] is defined
 
-- name: Add directory to path 
-  sudo: yes
-  template:
-    src: etc/profile.d/custom.sh.j2
-    dest: /etc/profile.d/custom.sh
+- name: Add directory to path
+  lineinfile:
+    dest: "~/.profile"
+    line: "if [ -d '{{ item | expanduser }}' ]; then PATH='$PATH:{{ item | expanduser }}'; fi"
+    state: present
+  with_items: essentials["paths"]
 
 - name: Make sure the users are configured
   sudo: yes
