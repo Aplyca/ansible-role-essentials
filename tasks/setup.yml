@@ -85,7 +85,7 @@
 - name: Add directory to path
   lineinfile:
     dest: "~/.profile"
-    line: "if [ -d '{{ item | expanduser }}' ]; then PATH='$PATH:{{ item | expanduser }}'; fi"
+    line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
     state: present
   with_items: essentials["paths"]
 
