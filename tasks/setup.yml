@@ -73,6 +73,15 @@
     state: mounted
   when: essentials['mount']['device'] is defined and attached_device|success
 
+- name: Create SSl Certificate directories
+  sudo: yes
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: 0755
+  with_items: essentials["ssl_certs"]
+  when: essentials['ssl_certs'] is defined
+
 - name: Create self-signed SSL certificate
   sudo: yes
   command: "openssl req -x509 -nodes -newkey {{ item.type | default('rsa') }}:{{ item.bits | default('2048') }} -subj '/C={{ item.CountryName | default('AU') }}/ST={{ item.StateName | default('Some-State') }}/O={{ item.OrganizationName | default('Internet Widgits Pty Ltd') }}/CN={{ item.CommonName | default('*.example.com') }}' -days {{ item.days | default('365') }} -keyout {{ item.name }}.key -out {{ item.name }}.crt -extensions v3_ca"
