@@ -29,6 +29,7 @@
     dest: ~/.ssh/config
     mode: 0600
   changed_when: False
+  tags: ssh_keys
 
 - name: Add key to remote user
   copy:
@@ -37,6 +38,7 @@
     mode: 0400
   with_items: essentials["ssh"]["config"]
   when: essentials["ssh"]["config"] is defined
+  tags: ssh_keys
 
 - name: Make sure the file system ACLs are present
   acl:
