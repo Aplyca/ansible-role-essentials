@@ -1,25 +1,25 @@
 ---
 - name: Upgrade the system
-  sudo: yes
+  become: yes
   yum:
     name: "*"
     state: latest
-  when: essentials["upgrade"] is defined and essentials["upgrade"]
-    
+  when: essentials.upgrade is defined and essentials.upgrade
+
 - name: Ensure essentials packages are present using yum
-  sudo: yes
+  become: yes
   yum:
     name: "{{ item }}"
     state: present
-  with_items: essentials["packages"]
+  with_items: "{{ essentials.packages }}"
 
 - name: Add custom timezone
-  sudo: yes
-  command: "sudo timedatectl set-timezone {{ essentials['timezone'] | default('Etc/UTC') }}"
+  become: yes
+  command: "sudo timedatectl set-timezone {{ essentials.timezone | default('Etc/UTC') }}"
   changed_when: False
 
 - name: Disable SELInux
-  sudo: yes
+  become: yes
   selinux:
-    state: "{{ essentials['selinux'] }}"
-  when: essentials['selinux'] is defined
+    state: "{{ essentials.selinux }}"
+  when: essentials.selinux is defined

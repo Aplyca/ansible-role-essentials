@@ -7,8 +7,8 @@
     hour: "{{ item.hour | default('*') }}"
     minute: "{{ item.minute | default('*') }}"
     weekday: "{{ item.weekday | default('*') }}"
-  with_items: essentials["crons"]
-  when: essentials["crons"] is defined
+  with_items: "{{ essentials.crons }}"
+  when: essentials.crons is defined
   tags: crontab
 
 - name: Make sure that the .ssh directory exists
@@ -21,8 +21,8 @@
   authorized_key:
     user: "{{ ansible_user_id }}"
     key: "{{ item }}"
-  with_items: essentials['ssh']['authorized_keys']
-  when: essentials['ssh']['authorized_keys']
+  with_items: "{{ essentials.ssh.authorized_keys }}"
+  when: essentials.ssh.authorized_keys
 
 - name: Make sure SSH config is present
   template:
@@ -37,8 +37,8 @@
     src: "{{ item.IdentityFileSource }}"
     dest: "~/.ssh/{{ item.IdentityFile }}"
     mode: 0400
-  with_items: essentials["ssh"]["config"]
-  when: essentials["ssh"]["config"] is defined
+  with_items: "{{ essentials.ssh.config }}"
+  when: essentials.ssh.config is defined
   tags: ssh_keys
 
 - name: Make sure the file system ACLs are present
@@ -49,63 +49,63 @@
      permissions: "{{ item.permissions | default('rwx') }}"
      default: "{{ item.permissions | default('yes') }}"
      state: "{{ item.state | default('present') }}"
-  with_items: essentials["acl"]
+  with_items: "{{ essentials.acl }}"
 
 - name: Check if an attached device exists
   command: "lsblk {{ essentials['mount']['device'] }}"
   register: attached_device
   changed_when: False
   ignore_errors: True
-  when: essentials['mount']['device'] is defined
+  when: essentials.mount.device is defined
 
 - name: Create mount point for directory
-  sudo: yes
+  become: yes
   file:
-    path: "{{ essentials['mount']['mount_point'] }}"
+    path: "{{ essentials.mount.mount_point }}"
     state: directory
     mode: 0775
-  when: essentials['mount']['mount_point'] is defined
+  when: essentials.mount.mount_point is defined
 
 - name: Mount Attacched Device
-  sudo: yes
+  become: yes
   mount:
-    name: "{{ essentials['mount']['mount_point'] }}"
-    src: "{{ essentials['mount']['device'] }}"
+    name: "{{ essentials.mount.mount_point }}"
+    src: "{{ essentials.mount.device }}"
     fstype: ext4
-    opts: "{{ essentials['mount']['options'] }}"
+    opts: "{{ essentials.mount.options }}"
     state: mounted
-  when: essentials['mount']['device'] is defined and attached_device|success
+  when: essentials.mount.device is defined and attached_device|success
 
 - name: Create SSl Certificate directories
-  sudo: yes
+  become: yes
   file:
     path: "{{ item.path }}"
     state: directory
     mode: 0755
-  with_items: essentials["ssl_certs"]
-  when: essentials['ssl_certs'] is defined
+  with_items: "{{ essentials.ssl_certs }}"
+  when: essentials.ssl_certs is defined
 
 - name: Create self-signed SSL certificate
-  sudo: yes
+  become: yes
   command: "openssl req -x509 -nodes -newkey {{ item.type | default('rsa') }}:{{ item.bits | default('2048') }} -subj '/C={{ item.CountryName | default('AU') }}/ST={{ item.StateName | default('Some-State') }}/O={{ item.OrganizationName | default('Internet Widgits Pty Ltd') }}/CN={{ item.CommonName | default('*.example.com') }}' -days {{ item.days | default('365') }} -keyout {{ item.name }}.key -out {{ item.name }}.crt -extensions v3_ca"
   args:
     chdir: "{{ item.path }}"
     creates: "{{ item.path }}/{{ item.name }}.crt"
-  with_items: essentials["ssl_certs"]
-  when: essentials['ssl_certs'] is defined
+  with_items: "{{ essentials.ssl_certs }}"
+  when: essentials.ssl_certs is defined
 
 - name: Add directory to path
   lineinfile:
     dest: "~/.profile"
     line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
     state: present
-  with_items: essentials["paths"]
+  with_items: "{{ essentials.paths }}"
 
 - name: Make sure the users are configured
-  sudo: yes
+  become: yes
   user:
     name: "{{ item.name }}"
     groups: "{{ item.groups }}"
     append: yes
-  with_items: essentials["users"]
-  when: essentials['users'] is defined
+  with_items: "{{ essentials.users }}"
+  when: essentials.users is defined
