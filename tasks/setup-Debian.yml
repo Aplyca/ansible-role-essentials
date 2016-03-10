@@ -28,9 +28,11 @@
 - name: Add custom timezone
   become: yes
   copy:
-    content: "{{ essentials['timezone'] | default('Etc/UTC') }}"
+    content: "{{ essentials.timezone | default('Etc/UTC') }}"
     dest: /etc/timezone
   notify:
     - reload tzdata
+    - stop ntp
     - update ntpd
-  when: timezone.stdout is defined and timezone.stdout != (essentials['timezone'] | default('Etc/UTC'))
+    - start ntp
+  when: timezone.stdout is defined and timezone.stdout != (essentials.timezone | default('Etc/UTC'))
