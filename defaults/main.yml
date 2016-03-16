@@ -20,3 +20,4 @@ essentials:
   ssl_certs: []
   users: []
   paths: []
+  certificates: []
