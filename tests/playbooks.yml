@@ -7,7 +7,7 @@
       shell: "git --version"
     - name: Test if Wget is installed
       shell: "wget --version"      
-    - name: Test if ShockShell is patched
-      shell: "env x='() { :;}; echo vulnerable' bash -c 'echo hello' | grep -q 'vulnerable' && (exit 0) || (exit 1)"  
+    - name: Test if ShellShock is patched
+      shell: "env x='() { :;}; echo vulnerable' bash -c 'echo hello' | grep -q 'vulnerable' && (exit 1) || (exit 0)"  
     - name: Check date
       shell: "date | grep -q 'EDT' && (exit 0) || (exit 1)" 
