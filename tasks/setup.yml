@@ -17,6 +17,26 @@
     state: directory
     mode: 0700
 
+- name: Make sure the groups are presents
+  become: yes
+  group:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    gid: "{{ item.id | default('') }}"
+  with_items: "{{ essentials.groups }}"
+
+- name: Make sure the users are configured
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.group | default('') }}"
+    groups: "{{ item.groups | default('') }}"
+    uid: "{{ item.id | default('') }}"
+    state: "{{ item.state | default('present') }}"
+    createhome: "{{ item.createhome | default('yes') }}"
+    append: yes
+  with_items: "{{ essentials.users }}"
+
 - name: Set up authorized_keys
   authorized_key:
     user: "{{ ansible_user_id }}"
@@ -93,15 +113,6 @@
     state: present
   with_items: "{{ essentials.paths }}"
 
-- name: Make sure the users are configured
-  become: yes
-  user:
-    name: "{{ item.name }}"
-    groups: "{{ item.groups }}"
-    append: yes
-  with_items: "{{ essentials.users }}"
-  when: essentials.users is defined
-  
 - name: Make sure the SSL certificates directories are present
   become: yes
   file:
@@ -117,7 +128,7 @@
     content: "{{ item.crt }}"
     dest: "/etc/ssl/{{ item.name }}/certificate.crt"
   with_items: "{{ essentials.certificates }}"
-  notify: 
+  notify:
     - reload apache
     - reload nginx
   when: item.name is defined and item.crt is defined
@@ -129,7 +140,7 @@
     content: "{{ item.key }}"
     dest: "/etc/ssl/{{ item.name }}/certificate.key"
   with_items: "{{ essentials.certificates }}"
-  notify: 
+  notify:
     - reload apache
     - reload nginx
   when: item.name is defined and item.key is defined
@@ -141,7 +152,7 @@
     content: "{{ item.intermediate }}"
     dest: "/etc/ssl/{{ item.name }}/intermediate.crt"
   with_items: "{{ essentials.certificates }}"
-  notify: 
+  notify:
     - reload apache
     - reload nginx
   when: item.name is defined and item.intermediate is defined

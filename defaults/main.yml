@@ -19,5 +19,6 @@ essentials:
   acl: []
   ssl_certs: []
   users: []
+  groups: []
   paths: []
   certificates: []
