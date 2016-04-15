@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+    - name: Test if Lynx is installed
+      shell: "lynx --version"
+    - name: Test if Git is installed
+      shell: "git --version"
+    - name: Test if Wget is installed
+      shell: "wget --version"      
+    - name: Test if ShockShell is patched
+      shell: "env x='() { :;}; echo vulnerable' bash -c 'echo hello' | grep -q 'vulnerable' && (exit 0) || (exit 1)"  
+    - name: Check date
+      shell: "date | grep -q 'EDT' && (exit 0) || (exit 1)" 

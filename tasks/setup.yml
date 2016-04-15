@@ -58,21 +58,13 @@
   ignore_errors: True
   when: essentials.mount.device is defined
 
-- name: Create mount point for directory
-  become: yes
-  file:
-    path: "{{ essentials.mount.mount_point }}"
-    state: directory
-    mode: 0775
-  when: essentials.mount.mount_point is defined
-
 - name: Mount Attacched Device
   become: yes
   mount:
-    name: "{{ essentials.mount.mount_point }}"
+    name: "{{ essentials.mount.name }}"
     src: "{{ essentials.mount.device }}"
     fstype: ext4
-    opts: "{{ essentials.mount.options }}"
+    opts: "{{ essentials.mount.options | default('') }}"
     state: mounted
   when: essentials.mount.device is defined and attached_device|success
 
