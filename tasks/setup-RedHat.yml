@@ -13,10 +13,17 @@
     state: present
   with_items: "{{ essentials.packages }}"
 
+- name: Ensure Python bindings are present
+  become: yes
+  yum:
+    name: libselinux-python
+    state: present
+
 - name: Add custom timezone
   become: yes
-  command: "sudo timedatectl set-timezone {{ essentials.timezone | default('Etc/UTC') }}"
+  command: "timedatectl set-timezone {{ essentials.timezone | default('Etc/UTC') }}"
   changed_when: False
+  when: ansible_os_family == "RedHat" and ansible_distribution_version|int >= 7
 
 - name: Disable SELInux
   become: yes

@@ -1,6 +1,8 @@
 ---
+dependencies: []
+    
 galaxy_info:
-  author: aplyca
+  author: Aplyca
   description: Essentials for Debian/Ubuntu.
   company: "Aplyca SAS"
   license: "license (BSD, MIT)"
@@ -14,6 +16,6 @@ galaxy_info:
     - all
   - name: CentOS
     versions:
-    - all    
+    - all
   categories:
     - web

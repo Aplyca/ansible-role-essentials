@@ -79,6 +79,14 @@
     state: mounted
   with_items: "{{ essentials.mounts }}"
 
+- name: Add directory to path
+  lineinfile:
+    dest: "~/.profile"
+    line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
+    state: present
+  with_items: "{{ essentials.paths }}"
+  tags: paths
+
 - name: Make sure the file system ACLs are present
   acl:
      name: "{{ item.name }}"
@@ -96,7 +104,6 @@
     state: directory
     mode: 0755
   with_items: "{{ essentials.ssl_certs }}"
-  when: essentials.ssl_certs is defined
 
 - name: Create self-signed SSL certificate
   become: yes
@@ -105,14 +112,6 @@
     chdir: "{{ item.path }}"
     creates: "{{ item.path }}/{{ item.name }}.crt"
   with_items: "{{ essentials.ssl_certs }}"
-  when: essentials.ssl_certs is defined
-
-- name: Add directory to path
-  lineinfile:
-    dest: "~/.profile"
-    line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
-    state: present
-  with_items: "{{ essentials.paths }}"
 
 - name: Make sure the SSL certificates directories are present
   become: yes
