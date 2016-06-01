@@ -58,7 +58,7 @@
     dest: "~/.ssh/{{ item.IdentityFile }}"
     mode: 0400
   with_items: "{{ essentials.ssh.config }}"
-  when: essentials.ssh.config is defined
+  when: item.IdentityFile is defined
   tags: ssh_keys
 
 - name: Make sure mount points are present
