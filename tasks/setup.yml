@@ -54,8 +54,8 @@
 
 - name: Add key to remote user
   copy:
-    src: "{{ item.IdentityFileSource }}"
-    dest: "~/.ssh/{{ item.IdentityFile }}"
+    src: "{{ item.IdentityFile }}"
+    dest: "{{ item.IdentityFile }}"
     mode: 0400
   with_items: "{{ essentials.ssh.config }}"
   when: item.IdentityFile is defined
