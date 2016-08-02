@@ -128,9 +128,6 @@
     content: "{{ item.crt }}"
     dest: "/etc/ssl/{{ item.name }}/certificate.crt"
   with_items: "{{ essentials.certificates }}"
-  notify:
-    - reload apache
-    - reload nginx
   when: item.name is defined and item.crt is defined
   no_log: True
 
@@ -140,9 +137,6 @@
     content: "{{ item.key }}"
     dest: "/etc/ssl/{{ item.name }}/certificate.key"
   with_items: "{{ essentials.certificates }}"
-  notify:
-    - reload apache
-    - reload nginx
   when: item.name is defined and item.key is defined
   no_log: True
 
@@ -152,8 +146,5 @@
     content: "{{ item.intermediate }}"
     dest: "/etc/ssl/{{ item.name }}/intermediate.crt"
   with_items: "{{ essentials.certificates }}"
-  notify:
-    - reload apache
-    - reload nginx
   when: item.name is defined and item.intermediate is defined
   no_log: True
