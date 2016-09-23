@@ -120,7 +120,7 @@
     state: directory
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined
-  no_log: True
+  no_log: essentials.no_log
 
 - name: Make sure the SSL certificates are present
   become: yes
@@ -129,7 +129,7 @@
     dest: "/etc/ssl/{{ item.name }}/certificate.crt"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.crt is defined
-  no_log: True
+  no_log: essentials.no_log
 
 - name: Make sure the SSL certificate keys are present
   become: yes
@@ -138,7 +138,7 @@
     dest: "/etc/ssl/{{ item.name }}/certificate.key"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.key is defined
-  no_log: True
+  no_log: essentials.no_log
 
 - name: Make sure the SSL certificate intermediates are present
   become: yes
@@ -147,4 +147,4 @@
     dest: "/etc/ssl/{{ item.name }}/intermediate.crt"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.intermediate is defined
-  no_log: True
+  no_log: essentials.no_log

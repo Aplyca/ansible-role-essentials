@@ -1,5 +1,6 @@
 ---
 essentials:
+  no_log: False
   upgrade: False
   update: True
   timezone: "America/New_York"
