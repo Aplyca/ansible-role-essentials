@@ -1,4 +1,0 @@
----
-essentials:
-  mount:
-    options: "defaults,nofail"
