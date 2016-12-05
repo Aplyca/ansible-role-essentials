@@ -5,6 +5,8 @@ essentials:
   update: True
   timezone: "America/New_York"
   packages:
+    - python2.7
+    - apt-transport-https    
     - rsync
     - lynx
     - bash
@@ -13,6 +15,7 @@ essentials:
     - git
     - acl
     - ntp
+  pip_packages: []    
   crons: []
   ssh:
     authorized_keys: []

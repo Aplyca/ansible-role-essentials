@@ -1,4 +1,10 @@
 ---
+- name: Install Python libraries
+  become: yes
+  pip:
+    name: "{{ item }}"
+  with_items: "{{ essentials.pip_packages }}"
+
 - name: Updating crontab
   cron:
     name: "{{ item.name }}"
