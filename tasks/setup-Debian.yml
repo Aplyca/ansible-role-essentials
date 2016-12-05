@@ -1,31 +1,33 @@
 ---
-- name: Add key for ppa python repository
-  apt_key: 
-    keyserver: keyserver.ubuntu.com
-    id: DB82666C
-    state: present
-  become: yes
+- block:
+    - name: Add key for ppa python repository
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: DB82666C
+        state: present
+      become: yes
 
-- name: Add ppa python repository
-  apt_repository:
-    repo: 'deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main'
-    state: present
-    update_cache: yes
-  become: yes
+    - name: Add ppa python repository
+      apt_repository:
+        repo: 'deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main'
+        state: present
+        update_cache: yes
+      become: yes
 
-- name: Update packages repos
-  become: yes
-  apt:
-    update_cache: yes
-    cache_valid_time: 86400
-  when: essentials.update
+    - name: Update packages repos
+      become: yes
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400
+      when: essentials.update
 
-- name: Upgrade the system
-  become: yes
-  apt:
-    upgrade: dist
-    cache_valid_time: 86400
-  when: essentials.upgrade
+    - name: Upgrade the system
+      become: yes
+      apt:
+        upgrade: dist
+        cache_valid_time: 86400
+      when: essentials.upgrade
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version <= '16'
 
 - name: Ensure essentials packages are present using apt
   become: yes
