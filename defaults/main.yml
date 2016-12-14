@@ -18,6 +18,7 @@ essentials:
   ssh:
     authorized_keys: []
     config: []
+    keys: []
   acl: []
   ssl_certs: []
   users: []

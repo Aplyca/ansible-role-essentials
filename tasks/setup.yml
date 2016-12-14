@@ -48,11 +48,13 @@
   with_items: "{{ essentials.users }}"
 
 - name: Set up authorized_keys
+  become: yes
   authorized_key:
-    user: "{{ ansible_user_id }}"
-    key: "{{ item }}"
+    user: "{{ item.username }}"
+    key: "{{ item.key }}"
   with_items: "{{ essentials.ssh.authorized_keys }}"
   when: essentials.ssh.authorized_keys
+  tags: authorized_keys
 
 - name: Make sure SSH config is present
   template:
@@ -62,13 +64,13 @@
   changed_when: False
   tags: ssh_keys
 
-- name: Add key to remote user
+- name: Add keys to remote user
   copy:
-    src: "{{ item.IdentityFile }}"
-    dest: "{{ item.IdentityFile }}"
+    src: "{{ item.content }}"
+    dest: ".ssh/{{ item.name }}"
     mode: 0400
-  with_items: "{{ essentials.ssh.config }}"
-  when: item.IdentityFile is defined
+  with_items: "{{ essentials.ssh.keys }}"
+  no_log: "{{ essentials.no_log }}"
   tags: ssh_keys
 
 - name: Make sure mount points are present
