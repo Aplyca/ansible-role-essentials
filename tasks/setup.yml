@@ -36,6 +36,7 @@
     state: "{{ item.state | default('present') }}"
     gid: "{{ item.id | default('') }}"
   with_items: "{{ essentials.groups }}"
+  tags: groups
 
 - name: Make sure the users are configured
   become: yes
@@ -48,6 +49,7 @@
     createhome: "{{ item.createhome | default('yes') }}"
     append: yes
   with_items: "{{ essentials.users }}"
+  tags: users
 
 - name: Set up authorized_keys
   become: yes
@@ -174,3 +176,4 @@
     scope: global
     value: "{{ item.value }}"
   with_dict: "{{ essentials.git_config | default({}) }}"
+  tags: git_config
