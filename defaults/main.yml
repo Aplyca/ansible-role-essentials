@@ -13,6 +13,7 @@ essentials:
     - git
     - acl
     - ntp
+    - python-pip
   pip_packages: []
   crons: []
   ssh:
@@ -26,3 +27,4 @@ essentials:
   paths: []
   certificates: []
   mounts: []
+  git_config: {}

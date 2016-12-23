@@ -21,6 +21,7 @@
     update_cache: yes
     cache_valid_time: 86400
   when: essentials.update
+  tags: packages
 
 - name: Upgrade the system
   become: yes
@@ -35,7 +36,8 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ essentials.packages }}"
-
+  tags: packages
+  
 - name: Check the timezone
   command: cat /etc/timezone
   register: timezone

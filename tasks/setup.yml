@@ -2,12 +2,14 @@
 - name: Upgrade PIP
   become: yes
   shell: "pip install --upgrade pip"
+  tags: pip_packages
 
 - name: Install Python libraries
   become: yes
   pip:
     name: "{{ item }}"
   with_items: "{{ essentials.pip_packages }}"
+  tags: pip_packages
 
 - name: Updating crontab
   cron:
@@ -165,3 +167,10 @@
   when: item.name is defined and item.intermediate is defined
   no_log: "{{ essentials.no_log }}"
   tags: certificates
+
+- name: Make sure Git config is present
+  git_config:
+    name: "{{ item.key }}"
+    scope: global
+    value: "{{ item.value }}"
+  with_dict: "{{ essentials.git_config | default({}) }}"
