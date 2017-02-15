@@ -52,6 +52,7 @@
   tags: users
 
 - name: Make sure sudoers to have passwordless sudo
+  become: yes
   lineinfile:
     dest: /etc/sudoers
     state: present
