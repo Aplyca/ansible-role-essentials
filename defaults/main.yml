@@ -24,6 +24,7 @@ essentials:
   ssl_certs: []
   users: []
   groups: []
+  sudoers: []  
   paths: []
   certificates: []
   mounts: []

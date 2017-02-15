@@ -51,6 +51,16 @@
   with_items: "{{ essentials.users }}"
   tags: users
 
+- name: Make sure sudoers to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%{{ item }}\s'
+    line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+  with_items: "{{ essentials.sudoers }}"
+  tags: sudoers
+
 - name: Set up authorized_keys
   become: yes
   authorized_key:
