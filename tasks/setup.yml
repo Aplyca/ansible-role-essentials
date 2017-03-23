@@ -81,11 +81,12 @@
 
 - name: Add keys to remote user
   copy:
-    src: "{{ item.key }}"
+    content: "{{ item.key }}"
     dest: ".ssh/{{ item.name }}"
     mode: 0400
   with_items: "{{ essentials.ssh.private_keys }}"
   tags: ssh_keys
+  no_log: True
 
 - name: Make sure mount points are present
   become: yes
