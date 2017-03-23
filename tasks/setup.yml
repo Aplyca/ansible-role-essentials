@@ -34,7 +34,6 @@
   group:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
-    gid: "{{ item.id | default('') }}"
   with_items: "{{ essentials.groups }}"
   tags: groups
 
@@ -44,7 +43,6 @@
     name: "{{ item.name }}"
     group: "{{ item.group | default('') }}"
     groups: "{{ item.groups | default('') }}"
-    uid: "{{ item.id | default('') }}"
     state: "{{ item.state | default('present') }}"
     createhome: "{{ item.createhome | default('yes') }}"
     append: yes
