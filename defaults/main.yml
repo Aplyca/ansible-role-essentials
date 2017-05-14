@@ -13,7 +13,7 @@ essentials:
     - git
     - acl
     - ntp
-    - python-pip
+    - python3-pip
   pip_packages: []
   crons: []
   ssh:
@@ -24,7 +24,7 @@ essentials:
   ssl_certs: []
   users: []
   groups: []
-  sudoers: []  
+  sudoers: []
   paths: []
   certificates: []
   mounts: []

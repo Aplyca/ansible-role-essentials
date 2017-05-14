@@ -15,6 +15,8 @@
       become: yes
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version <= '16'
 
+
+
 - name: Update packages repos
   become: yes
   apt:
@@ -37,20 +39,20 @@
     state: present
   with_items: "{{ essentials.packages }}"
   tags: packages
-  
-- name: Check the timezone
-  command: cat /etc/timezone
-  register: timezone
-  changed_when: False
 
-- name: Add custom timezone
+
+- name: Enalbe Phyton 3 symlinks
+  become: true
+  file:
+    src: '{{ item.src }}'
+    dest: '/usr/bin/{{ item.dest }}'
+    state: link
+  with_items:
+    - { src: 'python3', dest: 'python' }
+    - { src: 'pip3', dest: 'pip' }
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
+
+- name: Set custom timezone
   become: yes
-  copy:
-    content: "{{ essentials.timezone | default('Etc/UTC') }}"
-    dest: /etc/timezone
-  notify:
-    - reload tzdata
-    - stop ntp
-    - update ntpd
-    - start ntp
-  when: timezone.stdout is defined and timezone.stdout != (essentials.timezone | default('Etc/UTC'))
+  timezone:
+    name: "{{ essentials.timezone | default('Etc/UTC') }}"

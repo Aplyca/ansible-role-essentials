@@ -71,7 +71,7 @@
 
 - name: Make sure SSH config is present
   template:
-    src: home/ansible_user/.ssh/config.j2
+    src: config.j2
     dest: ~/.ssh/config
     mode: 0600
   changed_when: False
