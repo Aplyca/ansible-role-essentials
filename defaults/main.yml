@@ -15,17 +15,9 @@ essentials:
     - ntp
     - python3-pip
   pip_packages: []
-  crons: []
-  ssh:
-    authorized_keys: []
-    config: []
-    private_keys: []
   acl: []
   ssl_certs: []
   users: []
   groups: []
-  sudoers: []
-  paths: []
   certificates: []
   mounts: []
-  git_config: {}

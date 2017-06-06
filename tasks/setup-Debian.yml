@@ -15,8 +15,6 @@
       become: yes
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version <= '16'
 
-
-
 - name: Update packages repos
   become: yes
   apt:
@@ -39,7 +37,6 @@
     state: present
   with_items: "{{ essentials.packages }}"
   tags: packages
-
 
 - name: Enalbe Phyton 3 symlinks
   become: true

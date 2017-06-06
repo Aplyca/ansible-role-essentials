@@ -1,5 +1,59 @@
 ---
 essentials:
-  git_config:
-    user.name: "Test User"
-    user.email: "test@example.com"
+  groups:
+    - name: test1
+      sudo:
+        enabled: true
+        no_password: true
+    - name: test2
+      sudo:
+        enabled: true
+    - name: test3
+      sudo:
+        enabled: true
+  users:
+    - name: test
+      group: test1
+      groups:
+        - test2
+        - test3
+      ssh:
+        config:
+          - Host: git.repo
+            User: git
+            IdentityFile: "~/.ssh/git.repo"
+            StrictHostKeyChecking: "no"
+          - Host: eample.com
+            User: ubuntu
+            Post: 2222
+            IdentityFile: "~/.ssh/example.com.key"
+            StrictHostKeyChecking: "no"
+        private_keys:
+          - name: git.repo
+            key: "XXXXXXXX"
+        authorized_keys:
+          - "ssh-rsa XXXXXXXXX"
+      sudo:
+        enabled: true
+        no_password: true
+      git_config:
+        user.name: "Test User"
+        user.email: "test@example.com"
+      crontab:
+        - name: "Test cronjob 1"
+          root: "/var/log"
+          job: "ls -la"
+          minute: 0
+          hour: 23
+      paths: []
+    - name: testuser1
+      group: test1
+      sudo:
+        enabled: true
+    - name: ubuntu
+      group: ubuntu
+      ssh:
+        config:
+          - Host: host.com
+            User: ubuntu
+            IdentityFile: "~/.ssh/host.key"

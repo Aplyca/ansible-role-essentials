@@ -1,0 +1,58 @@
+---
+- name: Make sure that the .ssh directory exists
+  file:
+    path: ~/.ssh
+    state: directory
+    mode: 0700
+  when: user.ssh is defined    
+
+- name: Set up authorized_keys
+  authorized_key:
+    user: "{{ user.name }}"
+    key: "{{ item }}"
+  with_items: "{{ user.ssh.authorized_keys | default([]) }}"
+  when: user.ssh is defined
+
+- name: Make sure SSH config is present
+  template:
+    src: config.j2
+    dest: ~/.ssh/config
+    mode: 0600
+  changed_when: False
+  no_log: "{{ essentials.no_log }}"
+  when: user.ssh is defined
+
+- name: Add private keys to remote user
+  copy:
+    content: "{{ item.key }}"
+    dest: "~/.ssh/{{ item.name }}"
+    mode: 0400
+  with_items: "{{ user.ssh.private_keys | default([]) }}"
+  no_log: True
+  when: user.ssh is defined
+
+- name: Make sure Git config is present
+  git_config:
+    name: "{{ item.key }}"
+    scope: global
+    value: "{{ item.value }}"
+  with_dict: "{{ user.git_config | default({}) }}"
+
+- name: Updating crontab
+  cron:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    job: "cd {{ item.root | default('~') }} && {{ item.job }}"
+    hour: "{{ item.hour | default('*') }}"
+    minute: "{{ item.minute | default('*') }}"
+    weekday: "{{ item.weekday | default('*') }}"
+  with_items: "{{ user.crontab | default([]) }}"
+  tags: crontab
+
+- name: Add directory to path
+  lineinfile:
+    dest: "~/.profile"
+    line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
+    state: present
+  with_items: "{{ user.paths | default([])  }}"
+  tags: paths

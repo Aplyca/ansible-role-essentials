@@ -8,12 +8,12 @@ Ansible Role that installs and configure essential software on Debian/Ubuntu.
 ## Requirements
 
 Use hash behavior for variables in ansible.cfg
-See example: https://github.com/Aplyca/ansible-role-essentials/blob/master/tests/ansible.cfg
-See official docs: http://docs.ansible.com/intro_configuration.html#hash-behaviour
+* See example: https://github.com/Aplyca/ansible-role-essentials/blob/master/tests/ansible.cfg
+* See official docs: http://docs.ansible.com/intro_configuration.html#hash-behaviour
 
 ## Installation
 
-Using ansible galaxy:
+Using Ansible Galaxy:
 ```bash
 ansible-galaxy install aplyca.Essentials
 ```

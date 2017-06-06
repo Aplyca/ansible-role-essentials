@@ -1,0 +1,20 @@
+---
+- name: Make sure the user is present
+  user:
+    name: "{{ user.name }}"
+    group: "{{ user.group | default(False) }}"
+    groups: "{{ user.groups | default([]) }}"
+    state: "{{ user.state | default('present') }}"
+    createhome: "{{ user.createhome | default('yes') }}"
+    append: yes
+
+- name: Make sure user exists in sudoer
+  lineinfile:
+    dest: /etc/sudoers.d/81-users
+    state: present
+    regexp: '^{{ user.name }}\s'
+    line: "{{ user.name }} ALL=(ALL:ALL){% if user.sudo.no_password | default(false) %} NOPASSWD:{% endif %} ALL"
+    validate: 'visudo -cf %s'
+    create: yes
+    mode: 0400
+  when: user.sudo is defined and user.sudo.enabled | default(false)

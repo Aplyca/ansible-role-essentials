@@ -1,0 +1,16 @@
+---
+- name: Make sure the group is present
+  group:
+    name: "{{ group.name }}"
+    state: "{{ group.state | default('present') }}"
+
+- name: Make sure group exist in sudoer
+  lineinfile:
+    dest: /etc/sudoers.d/80-groups
+    state: present
+    regexp: '^%{{ group.name }}\s'
+    line: "%{{ group.name }} ALL=(ALL:ALL){% if group.sudo.no_password | default(false) %} NOPASSWD:{% endif %} ALL"
+    validate: 'visudo -cf %s'
+    create: yes
+    mode: 0400
+  when: group.sudo.enabled | default(false)

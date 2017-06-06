@@ -1,4 +1,7 @@
 .vagrant
 custom*
-*.retry
+*.box
 *.log
+.vault
+*.retry
+**/roles

@@ -11,80 +11,30 @@
   with_items: "{{ essentials.pip_packages }}"
   tags: pip_packages
 
-- name: Updating crontab
-  cron:
-    name: "{{ item.name }}"
-    state: "{{ item.state | default('present') }}"
-    job: "cd {{ item.root | default('~') }} && {{ item.job }}"
-    hour: "{{ item.hour | default('*') }}"
-    minute: "{{ item.minute | default('*') }}"
-    weekday: "{{ item.weekday | default('*') }}"
-  with_items: "{{ essentials.crons }}"
-  when: essentials.crons is defined
-  tags: crontab
-
-- name: Make sure that the .ssh directory exists
-  file:
-    path: ~/.ssh
-    state: directory
-    mode: 0700
-
-- name: Make sure the groups are presents
+- name: Make sure OS groups are present
   become: yes
-  group:
-    name: "{{ item.name }}"
-    state: "{{ item.state | default('present') }}"
-  with_items: "{{ essentials.groups }}"
-  tags: groups
+  include: group.yml
+  with_items: "{{ essentials.groups | default([]) }}"
+  loop_control:
+    loop_var: group
+  tags: essentials_groups
 
-- name: Make sure the users are configured
+- name: Make sure OS users are present
   become: yes
-  user:
-    name: "{{ item.name }}"
-    group: "{{ item.group | default('') }}"
-    groups: "{{ item.groups | default('') }}"
-    state: "{{ item.state | default('present') }}"
-    createhome: "{{ item.createhome | default('yes') }}"
-    append: yes
-  with_items: "{{ essentials.users }}"
-  tags: users
+  include: user.yml
+  with_items: "{{ essentials.users | default([]) }}"
+  loop_control:
+    loop_var: user
+  tags: essentials_users
 
-- name: Make sure sudoers to have passwordless sudo
-  become: yes
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%{{ item }}\s'
-    line: "%{{ item }} ALL=(ALL) NOPASSWD: ALL"
-    validate: 'visudo -cf %s'
-  with_items: "{{ essentials.sudoers }}"
-  tags: sudoers
-
-- name: Set up authorized_keys
-  become: yes
-  authorized_key:
-    user: "{{ item.username }}"
-    key: "{{ item.key }}"
-  with_items: "{{ essentials.ssh.authorized_keys }}"
-  when: essentials.ssh.authorized_keys
-  tags: authorized_keys
-
-- name: Make sure SSH config is present
-  template:
-    src: config.j2
-    dest: ~/.ssh/config
-    mode: 0600
-  changed_when: False
-  tags: ssh_keys
-
-- name: Add keys to remote user
-  copy:
-    content: "{{ item.key }}"
-    dest: ".ssh/{{ item.name }}"
-    mode: 0400
-  with_items: "{{ essentials.ssh.private_keys }}"
-  tags: ssh_keys
-  no_log: True
+- name: Make sure OS users are configured
+  become: true
+  become_user: "{{ user.name }}"
+  include: configure_user.yml
+  with_items: "{{ essentials.users | default([]) }}"
+  loop_control:
+    loop_var: user
+  tags: essentials_users
 
 - name: Make sure mount points are present
   become: yes
@@ -103,14 +53,6 @@
     opts: "{{ item.options | default('') }}"
     state: mounted
   with_items: "{{ essentials.mounts }}"
-
-- name: Add directory to path
-  lineinfile:
-    dest: "~/.profile"
-    line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
-    state: present
-  with_items: "{{ essentials.paths }}"
-  tags: paths
 
 - name: Make sure the file system ACLs are present
   acl:
@@ -179,11 +121,3 @@
   when: item.name is defined and item.intermediate is defined
   no_log: "{{ essentials.no_log }}"
   tags: certificates
-
-- name: Make sure Git config is present
-  git_config:
-    name: "{{ item.key }}"
-    scope: global
-    value: "{{ item.value }}"
-  with_dict: "{{ essentials.git_config | default({}) }}"
-  tags: git_config

@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{% for host in essentials.ssh.config %}
+{% for host in user.ssh.config | default([]) %}
 {% for directive, value in host|dictsort(true) %}
 {% if directive == "Host" %}
 Host {{ value }}
