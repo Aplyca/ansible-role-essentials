@@ -1,6 +1,6 @@
 ---
 essentials:
-  no_log: False
+  no_log: True
   upgrade: False
   update: True
   timezone: "America/New_York"
@@ -13,6 +13,7 @@ essentials:
     - git
     - acl
     - ntp
+    - python3
     - python3-pip
   pip_packages: []
   acl: []
