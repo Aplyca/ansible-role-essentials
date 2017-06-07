@@ -4,7 +4,7 @@
     path: ~/.ssh
     state: directory
     mode: 0700
-  when: user.ssh is defined    
+  when: user.ssh is defined
 
 - name: Set up authorized_keys
   authorized_key:
@@ -20,7 +20,7 @@
     mode: 0600
   changed_when: False
   no_log: "{{ essentials.no_log }}"
-  when: user.ssh is defined
+  when: user.ssh.config is defined
 
 - name: Add private keys to remote user
   copy:
