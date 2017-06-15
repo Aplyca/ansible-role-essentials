@@ -38,6 +38,15 @@
   with_items: "{{ essentials.packages }}"
   tags: packages
 
+- name: Ensure packages not required are not present using apt
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items: "{{ essentials.remove_packages }}"
+  tags: packages
+
 - name: Enalbe Phyton 3 symlinks
   become: true
   file:

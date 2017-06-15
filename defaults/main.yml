@@ -15,6 +15,7 @@ essentials:
     - ntp
     - python3
     - python3-pip
+  remove_packages: []  
   pip_packages: []
   acl: []
   ssl_certs: []
