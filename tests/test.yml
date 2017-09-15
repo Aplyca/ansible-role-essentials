@@ -57,3 +57,6 @@ essentials:
           - Host: host.com
             User: ubuntu
             IdentityFile: "~/.ssh/host.key"
+  hosts:
+    127.0.0.1: test
+    216.58.222.206: google.test

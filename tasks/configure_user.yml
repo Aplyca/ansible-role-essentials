@@ -20,7 +20,7 @@
     mode: 0600
   changed_when: False
   no_log: "{{ essentials.no_log }}"
-  when: user.ssh.config is defined
+  when: user.ssh is defined and user.ssh.config is defined
 
 - name: Add private keys to remote user
   copy:

@@ -121,3 +121,12 @@
   when: item.name is defined and item.intermediate is defined
   no_log: "{{ essentials.no_log }}"
   tags: certificates
+
+- name: make sure hosts are present
+  become: yes
+  lineinfile:
+    dest:  "/etc/hosts"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+  with_dict: "{{ essentials.hosts |default({}) }}"
+  tags: hosts
