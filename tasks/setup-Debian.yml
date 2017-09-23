@@ -47,7 +47,7 @@
   with_items: "{{ essentials.remove_packages }}"
   tags: packages
 
-- name: Enalbe Phyton 3 symlinks
+- name: Enable Phyton 3 symlinks
   become: true
   file:
     src: '{{ item.src }}'
@@ -62,3 +62,4 @@
   become: yes
   timezone:
     name: "{{ essentials.timezone | default('Etc/UTC') }}"
+  when: essentials.timezone

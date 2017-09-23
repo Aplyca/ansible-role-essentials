@@ -3,7 +3,7 @@ essentials:
   no_log: True
   upgrade: False
   update: True
-  timezone: "America/New_York"
+  timezone: False
   packages: []
   remove_packages: []
   pip_packages: []
