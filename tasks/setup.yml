@@ -1,15 +1,29 @@
 ---
-- name: Upgrade PIP
-  become: yes
-  shell: "pip install --upgrade pip"
-  tags: pip_packages
+- name: Configure Python
+  bock:
+    - name: Enable Phyton 3 symlinks
+      become: true
+      file:
+        src: '{{ item.src }}'
+        dest: '/usr/bin/{{ item.dest }}'
+        state: link
+      with_items:
+        - { src: 'python3', dest: 'python' }
+        - { src: 'pip3', dest: 'pip' }
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
 
-- name: Install Python libraries
-  become: yes
-  pip:
-    name: "{{ item }}"
-  with_items: "{{ essentials.pip_packages }}"
-  tags: pip_packages
+    - name: Upgrade PIP
+      become: yes
+      shell: "pip install --upgrade pip"
+      tags: pip_packages
+
+    - name: Install Python libraries
+      become: yes
+      pip:
+        name: "{{ item }}"
+      with_items: "{{ essentials.pip_packages }}"
+      tags: pip_packages
+  when: ansible_connection != 'docker'
 
 - name: Make sure OS groups are present
   become: yes

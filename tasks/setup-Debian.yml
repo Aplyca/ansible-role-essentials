@@ -47,17 +47,6 @@
   with_items: "{{ essentials.remove_packages }}"
   tags: packages
 
-- name: Enable Phyton 3 symlinks
-  become: true
-  file:
-    src: '{{ item.src }}'
-    dest: '/usr/bin/{{ item.dest }}'
-    state: link
-  with_items:
-    - { src: 'python3', dest: 'python' }
-    - { src: 'pip3', dest: 'pip' }
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16' and ansible_connection != 'docker'
-
 - name: Set custom timezone
   become: yes
   timezone:
