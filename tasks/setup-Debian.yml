@@ -56,7 +56,7 @@
   with_items:
     - { src: 'python3', dest: 'python' }
     - { src: 'pip3', dest: 'pip' }
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16' and ansible_connection != 'docker'
 
 - name: Set custom timezone
   become: yes
