@@ -1,6 +1,6 @@
 ---
 - name: Configure Python
-  bock:
+  block:
     - name: Enable Phyton 3 symlinks
       become: true
       file:

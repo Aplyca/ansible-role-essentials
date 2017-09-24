@@ -13,4 +13,4 @@
     validate: 'visudo -cf %s'
     create: yes
     mode: 0400
-  when: group.sudo.enabled | default(false)
+  when: group.sudo is defined and group.sudo.enabled | default(false)
