@@ -1,6 +1,11 @@
 ---
 - name: Configure Python
   block:
+    - name: Validate if pip already exists
+      stat:
+        path: /usr/bin/pip
+      register: st
+
     - name: Enable Phyton 3 symlinks
       become: true
       file:
@@ -10,7 +15,7 @@
       with_items:
         - { src: 'python3', dest: 'python' }
         - { src: 'pip3', dest: 'pip' }
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16' and st.stat.islnk is not defined
 
     - name: Upgrade PIP
       become: yes
