@@ -5,6 +5,10 @@
     state: directory
     mode: 0700
   when: user.ssh is defined
+  tags: 
+    - private_keys
+    - ssh_config
+    - authorized_keys  
 
 - name: Set up authorized_keys
   authorized_key:
@@ -12,6 +16,7 @@
     key: "{{ item }}"
   with_items: "{{ user.ssh.authorized_keys | default([]) }}"
   when: user.ssh is defined
+  tags: authorized_keys
 
 - name: Make sure SSH config is present
   template:
@@ -21,6 +26,7 @@
   changed_when: False
   no_log: "{{ essentials.no_log }}"
   when: user.ssh is defined and user.ssh.config is defined
+  tags: ssh_config
 
 - name: Add private keys to remote user
   copy:
@@ -30,6 +36,7 @@
   with_items: "{{ user.ssh.private_keys | default([]) }}"
   no_log: True
   when: user.ssh is defined
+  tags: private_keys
 
 - name: Make sure Git config is present
   git_config:
