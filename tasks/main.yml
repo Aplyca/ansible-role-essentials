@@ -2,10 +2,10 @@
 - debug: var=essentials verbosity=1
   tags: vars
   
-- include: setup-RedHat.yml
+- include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- include: setup-Debian.yml
+- include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: setup.yml
+- include_tasks: setup.yml

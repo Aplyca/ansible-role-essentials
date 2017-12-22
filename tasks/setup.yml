@@ -32,7 +32,7 @@
 
 - name: Make sure OS groups are present
   become: yes
-  include: group.yml
+  include_tasks: group.yml
   with_items: "{{ essentials.groups | default([]) }}"
   loop_control:
     loop_var: group
@@ -40,7 +40,7 @@
 
 - name: Make sure OS users are present
   become: yes
-  include: user.yml
+  include_tasks: user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
     loop_var: user
@@ -49,7 +49,7 @@
 - name: Make sure OS users are configured
   become: true
   become_user: "{{ user.name }}"
-  include: configure_user.yml
+  include_tasks: configure_user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
     loop_var: user
