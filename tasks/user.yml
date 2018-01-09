@@ -1,4 +1,6 @@
 ---
+- debug: msg="Make sure {{ user.name }} exists"
+
 - name: Make sure the user is present
   user:
     name: "{{ user.name }}"

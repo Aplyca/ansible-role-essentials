@@ -1,14 +1,17 @@
 ---
+- debug: msg="Configuring  {{ user.name }}"
+  tags: always
+
 - name: Make sure that the .ssh directory exists
   file:
     path: ~/.ssh
     state: directory
     mode: 0700
   when: user.ssh is defined
-  tags: 
-    - private_keys
-    - ssh_config
-    - authorized_keys  
+  tags:
+    - key_pairs
+    - copy_keys
+    - authorized_keys
 
 - name: Set up authorized_keys
   authorized_key:
@@ -16,7 +19,8 @@
     key: "{{ item }}"
   with_items: "{{ user.ssh.authorized_keys | default([]) }}"
   when: user.ssh is defined
-  tags: authorized_keys
+  tags:
+    - authorized_keys
 
 - name: Make sure SSH config is present
   template:
@@ -24,19 +28,43 @@
     dest: ~/.ssh/config
     mode: 0600
   changed_when: False
-  no_log: "{{ essentials.no_log }}"
   when: user.ssh is defined and user.ssh.config is defined
-  tags: ssh_config
+  tags:
+    - ssh_config
 
-- name: Add private keys to remote user
+- name: Add private ssh keys to remote user
   copy:
-    content: "{{ item.key }}"
+    content: "{{ item.private }}"
     dest: "~/.ssh/{{ item.name }}"
     mode: 0400
-  with_items: "{{ user.ssh.private_keys | default([]) }}"
+  with_items: "{{ user.ssh.copy_keys | default([]) }}"
   no_log: True
   when: user.ssh is defined
-  tags: private_keys
+  tags:
+    - copy_keys
+
+- name: Add public ssh keys to remote user
+  copy:
+    content: "{{ item.public }}"
+    dest: "~/.ssh/{{ item.name }}"
+    mode: 0400
+  with_items: "{{ user.ssh.copy_keys | default([]) }}"
+  no_log: True
+  when: user.ssh is defined and item.public is defined
+  tags:
+    - copy_keys
+
+- name: Create SSH key pair in remote user
+  user:
+    name: "{{ user.name }}"
+    generate_ssh_key: yes
+    ssh_key_bits: "{{ item.bits | default('4096') }}"
+    ssh_key_file: ".ssh/{{ item.name | default(user.name) }}"
+    ssh_key_comment: "{{ item.comment | default(user.name) }}"
+  with_items: "{{ user.ssh.key_pairs | default([]) }}"
+  when: user.ssh is defined
+  tags:
+    - key_pairs
 
 - name: Make sure Git config is present
   git_config:
@@ -44,6 +72,8 @@
     scope: global
     value: "{{ item.value }}"
   with_dict: "{{ user.git_config | default({}) }}"
+  tags:
+    - git_config
 
 - name: Updating crontab
   cron:
@@ -54,7 +84,8 @@
     minute: "{{ item.minute | default('*') }}"
     weekday: "{{ item.weekday | default('*') }}"
   with_items: "{{ user.crontab | default([]) }}"
-  tags: crontab
+  tags:
+    - crontab
 
 - name: Add directory to path
   lineinfile:
@@ -62,4 +93,5 @@
     line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
     state: present
   with_items: "{{ user.paths | default([])  }}"
-  tags: paths
+  tags:
+    - paths

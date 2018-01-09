@@ -1,5 +1,7 @@
 ---
 essentials:
+  packages:
+    - lynx
   groups:
     - name: test1
       sudo:
@@ -25,12 +27,17 @@ essentials:
             StrictHostKeyChecking: "no"
           - Host: eample.com
             User: ubuntu
-            Post: 2222
+            Port: 2222
             IdentityFile: "~/.ssh/example.com.key"
             StrictHostKeyChecking: "no"
-        private_keys:
+        copy_keys:
           - name: git.repo
-            key: "XXXXXXXX"
+            private: "XXXXXXXX"
+        key_pairs:
+          - name: github
+            comment: key@github.com
+          - name: github2
+            comment: key@github2.com
         authorized_keys:
           - "ssh-rsa XXXXXXXXX"
       sudo:

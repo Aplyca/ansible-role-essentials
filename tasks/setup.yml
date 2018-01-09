@@ -1,11 +1,11 @@
 ---
+- name: Validate if pip already exists
+  stat:
+    path: /usr/bin/pip3
+  register: pip3
+
 - name: Configure Python
   block:
-    - name: Validate if pip already exists
-      stat:
-        path: /usr/bin/pip
-      register: st
-
     - name: Enable Phyton 3 symlinks
       become: true
       file:
@@ -15,7 +15,7 @@
       with_items:
         - { src: 'python3', dest: 'python' }
         - { src: 'pip3', dest: 'pip' }
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16' and st.stat.islnk is not defined
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
 
     - name: Upgrade PIP
       become: yes
@@ -28,7 +28,7 @@
         name: "{{ item }}"
       with_items: "{{ essentials.pip_packages }}"
       tags: pip_packages
-  when: ansible_connection != 'docker'
+  when: ansible_connection != 'docker' and pip3.stat.exists
 
 - name: Make sure OS groups are present
   become: yes
@@ -49,11 +49,12 @@
 - name: Make sure OS users are configured
   become: true
   become_user: "{{ user.name }}"
-  include_tasks: configure_user.yml
+  include: configure_user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
     loop_var: user
-  tags: essentials_users
+  tags:
+    - configure_users
 
 - name: Make sure mount points are present
   become: yes

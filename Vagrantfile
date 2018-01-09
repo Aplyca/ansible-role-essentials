@@ -20,8 +20,9 @@ Vagrant.configure(2) do |config|
           #provisioner.galaxy_role_file = "roles/requirements.yml"
           #provisioner.galaxy_roles_path = "roles"
           provisioner.raw_arguments = ["-e ansible_python_interpreter=/usr/bin/python3"]
-          #provisioner.verbose = "v"
-          #provisioner.tags = "vars"
+          provisioner.verbose = "v"
+          provisioner.tags = ["vars"]
+          provisioner.compatibility_mode = "2.0"
       end
   end
 end
