@@ -12,6 +12,7 @@
         src: '{{ item.src }}'
         dest: '/usr/bin/{{ item.dest }}'
         state: link
+        force: yes
       with_items:
         - { src: 'python3', dest: 'python' }
         - { src: 'pip3', dest: 'pip' }
