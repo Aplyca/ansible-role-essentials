@@ -19,7 +19,7 @@
   become: yes
   apt:
     update_cache: yes
-    cache_valid_time: 86400
+    cache_valid_time: "{{essentials.apt_cache}}"
   when: essentials.update
   tags: packages
 
@@ -27,7 +27,7 @@
   become: yes
   apt:
     upgrade: dist
-    cache_valid_time: 86400
+    cache_valid_time: "{{essentials.apt_cache}}"
   when: essentials.upgrade
 
 - name: Ensure essentials packages are present using apt

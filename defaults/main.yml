@@ -3,6 +3,7 @@ essentials:
   no_log: True
   upgrade: False
   update: True
+  apt_cache: 86400
   timezone: False
   packages: []
   remove_packages: []
