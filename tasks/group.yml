@@ -1,10 +1,13 @@
 ---
 - name: Make sure the group is present
+  become: yes
   group:
     name: "{{ group.name }}"
     state: "{{ group.state | default('present') }}"
+  tags: essentials_groups
 
 - name: Make sure group exist in sudoer
+  become: yes
   lineinfile:
     dest: /etc/sudoers.d/80-groups
     state: present
@@ -14,3 +17,4 @@
     create: yes
     mode: 0400
   when: group.sudo is defined and group.sudo.enabled | default(false)
+  tags: essentials_groups

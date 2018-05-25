@@ -3,8 +3,10 @@
   tags: always
 
 - name: Make sure that the .ssh directory exists
+  become: yes
+  become_user: "{{ user.name }}"
   file:
-    path: ~/.ssh
+    path: "~/.ssh"
     state: directory
     mode: 0700
   when: user.ssh is defined
@@ -12,8 +14,10 @@
     - key_pairs
     - copy_keys
     - authorized_keys
+    - configure_users
 
 - name: Set up authorized_keys
+  become: yes
   authorized_key:
     user: "{{ user.name }}"
     key: "{{ item }}"
@@ -21,8 +25,11 @@
   when: user.ssh is defined
   tags:
     - authorized_keys
+    - configure_users
 
 - name: Make sure SSH config is present
+  become: yes
+  become_user: "{{ user.name }}"
   template:
     src: config.j2
     dest: ~/.ssh/config
@@ -31,8 +38,11 @@
   when: user.ssh is defined and user.ssh.config is defined
   tags:
     - ssh_config
+    - configure_users
 
 - name: Add private ssh keys to remote user
+  become: yes
+  become_user: "{{ user.name }}"
   copy:
     content: "{{ item.private }}"
     dest: "~/.ssh/{{ item.name }}"
@@ -42,8 +52,11 @@
   when: user.ssh is defined
   tags:
     - copy_keys
+    - configure_users
 
 - name: Add public ssh keys to remote user
+  become: yes
+  become_user: "{{ user.name }}"
   copy:
     content: "{{ item.public }}"
     dest: "~/.ssh/{{ item.name }}"
@@ -53,8 +66,10 @@
   when: user.ssh is defined and item.public is defined
   tags:
     - copy_keys
+    - configure_users
 
 - name: Create SSH key pair in remote user
+  become: yes
   user:
     name: "{{ user.name }}"
     generate_ssh_key: yes
@@ -65,8 +80,11 @@
   when: user.ssh is defined
   tags:
     - key_pairs
+    - configure_users
 
 - name: Make sure Git config is present
+  become: yes
+  become_user: "{{ user.name }}"
   git_config:
     name: "{{ item.key }}"
     scope: global
@@ -74,8 +92,11 @@
   with_dict: "{{ user.git_config | default({}) }}"
   tags:
     - git_config
+    - configure_users
 
 - name: Updating crontab
+  become: yes
+  become_user: "{{ user.name }}"
   cron:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
@@ -86,8 +107,11 @@
   with_items: "{{ user.crontab | default([]) }}"
   tags:
     - crontab
+    - configure_users
 
 - name: Add directory to path
+  become: yes
+  become_user: "{{ user.name }}"
   lineinfile:
     dest: "~/.profile"
     line: 'if [ -d "{{ item }}" ]; then PATH="$PATH:{{ item | expanduser }}"; fi'
@@ -95,3 +119,4 @@
   with_items: "{{ user.paths | default([])  }}"
   tags:
     - paths
+    - configure_users

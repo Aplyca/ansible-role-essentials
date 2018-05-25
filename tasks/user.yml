@@ -2,6 +2,7 @@
 - debug: msg="Make sure {{ user.name }} exists"
 
 - name: Make sure the user is present
+  become: yes
   user:
     name: "{{ user.name }}"
     group: "{{ user.group | default(False) }}"
@@ -9,8 +10,10 @@
     state: "{{ user.state | default('present') }}"
     createhome: "{{ user.createhome | default('yes') }}"
     append: yes
+  tags: essentials_users
 
 - name: Make sure user exists in sudoer
+  become: yes
   lineinfile:
     dest: /etc/sudoers.d/81-users
     state: present
@@ -20,3 +23,4 @@
     create: yes
     mode: 0400
   when: user.sudo is defined and user.sudo.enabled | default(false)
+  tags: essentials_users

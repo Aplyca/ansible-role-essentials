@@ -48,14 +48,13 @@
   tags: essentials_users
 
 - name: Make sure OS users are configured
-  become: true
+  become: yes
   become_user: "{{ user.name }}"
   include: configure_user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
     loop_var: user
-  tags:
-    - configure_users
+  tags: configure_users
 
 - name: Make sure mount points are present
   become: yes
