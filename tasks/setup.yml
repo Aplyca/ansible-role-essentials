@@ -1,34 +1,34 @@
 ---
 - name: Validate if pip already exists
   stat:
-    path: /usr/bin/pip3
+      path: /usr/bin/pip3
   register: pip3
 
 - name: Configure Python
   block:
-    - name: Enable Phyton 3 symlinks
-      become: true
-      file:
-        src: '{{ item.src }}'
-        dest: '/usr/bin/{{ item.dest }}'
-        state: link
-        force: yes
-      with_items:
-        - { src: 'python3', dest: 'python' }
-        - { src: 'pip3', dest: 'pip' }
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
+      - name: Enable Phyton 3 symlinks
+        become: true
+        file:
+            src: "{{ item.src }}"
+            dest: "/usr/bin/{{ item.dest }}"
+            state: link
+            force: yes
+        with_items:
+            - { src: "python3", dest: "python" }
+            - { src: "pip3", dest: "pip" }
+        when: ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '16'
 
-    - name: Upgrade PIP
-      become: yes
-      shell: "pip install --upgrade pip"
-      tags: pip_packages
+      - name: Upgrade PIP
+        become: yes
+        shell: "pip install --upgrade pip"
+        tags: pip_packages
 
-    - name: Install Python libraries
-      become: yes
-      pip:
-        name: "{{ item }}"
-      with_items: "{{ essentials.pip_packages }}"
-      tags: pip_packages
+      - name: Install Python libraries
+        become: yes
+        pip:
+            name: "{{ item }}"
+        with_items: "{{ essentials.pip_packages }}"
+        tags: pip_packages
   when: ansible_connection != 'docker' and pip3.stat.exists
 
 - name: Make sure OS groups are present
@@ -36,7 +36,7 @@
   include_tasks: group.yml
   with_items: "{{ essentials.groups | default([]) }}"
   loop_control:
-    loop_var: group
+      loop_var: group
   tags: essentials_groups
 
 - name: Make sure OS users are present
@@ -44,7 +44,7 @@
   include_tasks: user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
-    loop_var: user
+      loop_var: user
   tags: essentials_users
 
 - name: Make sure OS users are configured
@@ -53,43 +53,59 @@
   include: configure_user.yml
   with_items: "{{ essentials.users | default([]) }}"
   loop_control:
-    loop_var: user
+      loop_var: user
   tags: configure_users
 
-- name: Make sure mount points are present
-  become: yes
-  file:
-    path: "{{ item.path }}"
-    mode: 0777
-    state: directory
-  with_items: "{{ essentials.mounts }}"
+- name: Tasks for mounting filesystems
+  block:
+      - name: Setting the maximun timeout I/O for operations on NVMe devices
+        shell: "echo '4294967295' > /sys/module/nvme_core/parameters/io_timeout"
 
-- name: Make sure devices are mounted
+      - name: Make sure mount points are present
+        file:
+            path: "{{ item.path }}"
+            mode: 0777
+            state: directory
+        with_items: "{{ essentials.mounts }}"
+
+      - name: Create filesystem
+        filesystem:
+            fstype: "{{ item.type | default('ext4') }}"
+            dev: "{{ item.source }}"
+        with_items: "{{ essentials.mounts }}"
+
+      - name: Label filesystem
+        shell: "e2label {{ item.source }} {{ item.label }}"
+        with_items: "{{ essentials.mounts }}"
+
+      - name: Make sure devices are mounted
+        mount:
+            path: "{{ item.path }}"
+            src: "LABEL={{ item.label }}"
+            fstype: "{{ item.type | default('ext4') }}"
+            opts: "{{ item.options | default('') }}"
+            state: mounted
+            passno: "{{ item.passno | default(0) }}"
+        with_items: "{{ essentials.mounts }}"
   become: yes
-  mount:
-    name: "{{ item.path }}"
-    src: "{{ item.source }}"
-    fstype: "{{ item.type | default('ext4') }}"
-    opts: "{{ item.options | default('') }}"
-    state: mounted
-  with_items: "{{ essentials.mounts }}"
+  tags: mount
 
 - name: Make sure the file system ACLs are present
   acl:
-     name: "{{ item.name }}"
-     entity: "{{ item.entity  | default(ansible_user_id)}}"
-     etype: "{{ item.etype | default('user') }}"
-     permissions: "{{ item.permissions | default('rwx') }}"
-     default: "{{ item.permissions | default('yes') }}"
-     state: "{{ item.state | default('present') }}"
+      name: "{{ item.name }}"
+      entity: "{{ item.entity  | default(ansible_user_id)}}"
+      etype: "{{ item.etype | default('user') }}"
+      permissions: "{{ item.permissions | default('rwx') }}"
+      default: "{{ item.permissions | default('yes') }}"
+      state: "{{ item.state | default('present') }}"
   with_items: "{{ essentials.acl }}"
 
 - name: Create SSl Certificate directories
   become: yes
   file:
-    path: "{{ item.path }}"
-    state: directory
-    mode: 0755
+      path: "{{ item.path }}"
+      state: directory
+      mode: 0755
   with_items: "{{ essentials.ssl_certs }}"
   tags: certificates
 
@@ -97,16 +113,16 @@
   become: yes
   command: "openssl req -x509 -nodes -newkey {{ item.type | default('rsa') }}:{{ item.bits | default('2048') }} -subj '/C={{ item.CountryName | default('AU') }}/ST={{ item.StateName | default('Some-State') }}/O={{ item.OrganizationName | default('Internet Widgits Pty Ltd') }}/CN={{ item.CommonName | default('*.example.com') }}' -days {{ item.days | default('365') }} -keyout {{ item.name }}.key -out {{ item.name }}.crt -extensions v3_ca"
   args:
-    chdir: "{{ item.path }}"
-    creates: "{{ item.path }}/{{ item.name }}.crt"
+      chdir: "{{ item.path }}"
+      creates: "{{ item.path }}/{{ item.name }}.crt"
   with_items: "{{ essentials.ssl_certs }}"
   tags: certificates
 
 - name: Make sure the SSL certificates directories are present
   become: yes
   file:
-    dest: "/etc/ssl/{{ item.name }}"
-    state: directory
+      dest: "/etc/ssl/{{ item.name }}"
+      state: directory
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined
   no_log: "{{ essentials.no_log }}"
@@ -115,8 +131,8 @@
 - name: Make sure the SSL certificates are present
   become: yes
   copy:
-    content: "{{ item.crt }}"
-    dest: "/etc/ssl/{{ item.name }}/certificate.crt"
+      content: "{{ item.crt }}"
+      dest: "/etc/ssl/{{ item.name }}/certificate.crt"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.crt is defined
   no_log: "{{ essentials.no_log }}"
@@ -125,8 +141,8 @@
 - name: Make sure the SSL certificate keys are present
   become: yes
   copy:
-    content: "{{ item.key }}"
-    dest: "/etc/ssl/{{ item.name }}/certificate.key"
+      content: "{{ item.key }}"
+      dest: "/etc/ssl/{{ item.name }}/certificate.key"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.key is defined
   no_log: "{{ essentials.no_log }}"
@@ -135,8 +151,8 @@
 - name: Make sure the SSL certificate intermediates are present
   become: yes
   copy:
-    content: "{{ item.intermediate }}"
-    dest: "/etc/ssl/{{ item.name }}/intermediate.crt"
+      content: "{{ item.intermediate }}"
+      dest: "/etc/ssl/{{ item.name }}/intermediate.crt"
   with_items: "{{ essentials.certificates }}"
   when: item.name is defined and item.intermediate is defined
   no_log: "{{ essentials.no_log }}"
@@ -145,8 +161,8 @@
 - name: make sure hosts are present
   become: yes
   lineinfile:
-    dest:  "/etc/hosts"
-    line: "{{ item.key }} {{ item.value }}"
-    state: present
+      dest: "/etc/hosts"
+      line: "{{ item.key }} {{ item.value }}"
+      state: present
   with_dict: "{{ essentials.hosts |default({}) }}"
   tags: hosts
